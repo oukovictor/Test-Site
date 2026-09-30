@@ -12,7 +12,7 @@ const mpesaPhone = document.getElementById('mpesaPhone');
 const placeOrderBtn = document.getElementById('placeOrderBtn');
 const jerseyNumberSection = document.getElementById('jerseyNumberSection');
 const jerseyNumberFields = document.getElementById('jerseyNumberFields');
-const darajaEndpoint = 'http://localhost:8000/api/v1/stkpush';
+const darajaEndpoint = 'https://fastapi-ta07.onrender.com/api/v1/stkpush';
 const callbackPollInterval = 3000;
 let cart = JSON.parse(localStorage.getItem('utawalaCart') || '[]');
 

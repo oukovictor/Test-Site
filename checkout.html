@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — UTAWALA YOUTH</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="checkout-page">
+  <div class="stripes"></div>
+  <nav>
+    <a class="brand" href="index.html#top">
+      <svg class="brand-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="50" cy="50" r="47" fill="#05070F" stroke="#16A34A" stroke-width="3"/>
+        <path d="M50 3 A47 47 0 0 1 50 97 Z" fill="#000000"/>
+        <path d="M50 3 A47 47 0 0 0 50 97 Z" fill="#16A34A"/>
+        <text x="50" y="60" font-family="Anton" font-size="34" fill="#FFFFFF" text-anchor="middle">U</text>
+      </svg>
+      UTAWALA YOUTH
+    </a>
+    <a class="back-shop" href="index.html#shop">Back to shop</a>
+  </nav>
+
+  <main class="checkout-main">
+    <div class="section-head">
+      <p class="eyebrow">Club store</p>
+      <h1>Complete your order</h1>
+      <p class="lede">Your kit helps keep Utawala Youth Academy moving. Enter your details and we will prepare your order.</p>
+    </div>
+
+    <div class="checkout-layout">
+      <form class="checkout-form" id="checkoutForm">
+        <section class="checkout-section">
+          <h3>Contact details</h3>
+          <div class="field-grid">
+            <div class="field">
+              <label for="fullName">Full name</label>
+              <input id="fullName" name="fullName" required autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="phone">Phone number</label>
+              <input id="phone" name="phone" type="tel" required autocomplete="tel">
+            </div>
+            <div class="field full">
+              <label for="email">Email address</label>
+              <input id="email" name="email" type="email" required autocomplete="email">
+            </div>
+          </div>
+        </section>
+
+        <section class="checkout-section">
+          <h3>Delivery</h3>
+          <div class="delivery-options">
+            <label class="delivery-option">
+              <input type="radio" name="delivery" value="pickup" data-fee="0" checked>
+              <span>Pickup at San Siro, Kincar</span>
+              <strong>Free</strong>
+            </label>
+            <label class="delivery-option">
+              <input type="radio" name="delivery" value="local" data-fee="250">
+              <span>outside Utawala delivery</span>
+              <strong>KES 250</strong>
+            </label>
+          </div>
+          <div class="field" style="margin-top:14px;">
+            <label for="address">Pickup note or delivery address</label>
+            <input id="address" name="address" required>
+          </div>
+        </section>
+
+        <section class="checkout-section jersey-number-section" id="jerseyNumberSection">
+          <h3>Jersey numbers</h3>
+          <p class="section-note">Add an optional squad number to each item.</p>
+          <div class="jersey-number-fields" id="jerseyNumberFields"></div>
+        </section>
+
+        <section class="checkout-section">
+          <h3>Payment</h3>
+          <div class="field">
+            <label for="payment">Payment method</label>
+            <select id="payment" name="payment">
+              <option value="mpesa">M-Pesa</option>
+              <option value="card">Card</option>
+              <option value="pickup">Pay on pickup</option>
+            </select>
+          </div>
+          <div class="mpesa-fields" id="mpesaFields">
+            <div class="field">
+              <label for="mpesaPhone">M-Pesa number</label>
+              <input id="mpesaPhone" name="mpesaPhone" type="tel" inputmode="numeric" autocomplete="tel" pattern="2547\d{8}" minlength="12" maxlength="12" placeholder="2547XXXXXXXX" title="Enter a 12-digit number starting with 2547" required>
+            </div>
+            <p class="mpesa-hint">A payment prompt would be sent to this number after connecting the M-Pesa Daraja API.</p>
+          </div>
+          <p class="shop-disclaimer">This is a front-end demo. Connect M-Pesa Daraja or a card processor before accepting live payments.</p>
+        </section>
+
+        <button class="place-order-btn" id="placeOrderBtn" type="submit">Request M-Pesa payment</button>
+        <p class="checkout-message" id="checkoutMessage" role="status"></p>
+      </form>
+
+      <aside class="order-panel">
+        <p class="eyebrow">Order summary</p>
+        <h2>Your kit</h2>
+        <div class="order-items" id="orderItems"></div>
+        <div class="checkout-empty" id="checkoutEmpty" hidden>Your cart is empty. Return to the shop to add a kit.</div>
+        <div class="order-totals" id="orderTotals">
+          <div><span>Subtotal</span><strong id="orderSubtotal">KES 0</strong></div>
+          <div><span>Delivery</span><strong id="orderDelivery">Free</strong></div>
+          <div class="order-total"><span>Total</span><strong id="orderTotal">KES 0</strong></div>
+        </div>
+        <a class="back-shop" href="index.html#shop">← Continue shopping</a>
+      </aside>
+    </div>
+  </main>
+  <div class="stripes"></div>
+  <script src="checkout.js"></script>
+</body>
+</html>

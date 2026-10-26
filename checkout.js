@@ -15,6 +15,9 @@ const jerseyNumberFields = document.getElementById('jerseyNumberFields');
 const darajaEndpoint = 'https://fastapi-ta07.onrender.com/api/v1/stkpush';
 const callbackPollInterval = 3000;
 let cart = JSON.parse(localStorage.getItem('utawalaCart') || '[]');
+let contribution = JSON.parse(localStorage.getItem('utawalaContribution') || 'null');
+const contributionCheckout = new URLSearchParams(window.location.search).get('type') === 'contribution';
+if (!contributionCheckout) contribution = null;
 
 const formatCurrency = (amount) => `KES ${amount.toLocaleString('en-KE')}`;
 
@@ -52,13 +55,16 @@ function renderOrder() {
       <span class="order-item-price">${formatCurrency(item.price * item.quantity)}</span>
     </div>
   `).join('');
-  const isEmpty = cart.length === 0;
+  if (contributionCheckout && contribution?.amount) {
+    orderItems.innerHTML += `<div class="order-item"><div><strong>Club contribution</strong><small>Community support</small></div><span class="order-item-price">${formatCurrency(contribution.amount)}</span></div>`;
+  }
+  const isEmpty = cart.length === 0 && !(contributionCheckout && contribution?.amount);
   checkoutEmpty.hidden = !isEmpty;
   orderTotals.hidden = isEmpty;
   checkoutForm.querySelector('.place-order-btn').disabled = isEmpty;
-  orderSubtotal.textContent = formatCurrency(subtotal);
+  orderSubtotal.textContent = formatCurrency(subtotal + (contributionCheckout ? Number(contribution?.amount || 0) : 0));
   orderDelivery.textContent = deliveryFee ? formatCurrency(deliveryFee) : 'Free';
-  orderTotal.textContent = formatCurrency(subtotal + deliveryFee);
+  orderTotal.textContent = formatCurrency(subtotal + (contributionCheckout ? Number(contribution?.amount || 0) : 0) + deliveryFee);
   renderJerseyNumberFields();
 }
 
@@ -101,19 +107,25 @@ payment.addEventListener('change', updatePaymentFields);
 
 checkoutForm.addEventListener('submit', async (event) => {
   event.preventDefault();
-  if (cart.length === 0) return;
+  if (cart.length === 0 && !(contributionCheckout && contribution?.amount)) return;
   if (!checkoutForm.reportValidity()) return;
 
   const submitLabel = placeOrderBtn.textContent;
   const deliveryFee = selectedDeliveryFee();
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const contributionAmount = contributionCheckout ? Number(contribution?.amount || 0) : 0;
+  if (contributionCheckout && (!Number.isSafeInteger(contributionAmount) || contributionAmount < 1)) {
+    checkoutMessage.textContent = 'Contribution amount is missing or invalid. Return to the shop and choose an amount.';
+    return;
+  }
 
-  
   const jerseyNumbers = [...document.querySelectorAll('[data-jersey-key]')]
     .filter((input) => input.value)
     .map((input) => ({ key: input.dataset.jerseyKey, number: Number(input.value) }));
   const payload = {
-    amount: subtotal + deliveryFee,
+    amount: subtotal + contributionAmount + deliveryFee,
+    type: contributionCheckout ? 'contribution' : 'order',
+    contribution: contributionCheckout ? { amount: contributionAmount } : null,
     phone: mpesaPhone.value,
     customer: {
       name: checkoutForm.fullName.value,
@@ -154,6 +166,8 @@ checkoutForm.addEventListener('submit', async (event) => {
     }
     const callbackResult = result.statusUrl ? await waitForCallback(result.statusUrl) : result;
     localStorage.removeItem('utawalaCart');
+    localStorage.removeItem('utawalaContribution');
+    contribution = null;
     checkoutMessage.textContent = `Payment confirmed for order ${orderNumber}. Your kit order is complete.`;
     renderOrder();
   } catch (error) {

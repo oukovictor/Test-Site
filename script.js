@@ -24,6 +24,7 @@ if ('IntersectionObserver' in window) {
 const countdownGrid = document.getElementById('countdownGrid');
 if (countdownGrid) {
   const fixtures = [
+    
     {
       opponent: 'Cloth Millers',
       date: '2026-10-01T15:00:00+03:00',
@@ -230,17 +231,13 @@ const contributeBtn = document.getElementById('contributeBtn');
 if (contributeBtn) {
   contributeBtn.addEventListener('click', () => {
     const selected = document.querySelector('.amount-btn.selected');
-    const amount = customAmount?.value || (selected ? selected.dataset.amount : null);
-    const original = contributeBtn.textContent;
-
-    if (!amount) {
-      contributeBtn.textContent = 'Pick or enter an amount';
-    } else {
-      contributeBtn.textContent = `Thank you — KES ${amount} noted ✓`;
+    const amount = Number(String(customAmount?.value || selected?.dataset.amount || '').trim());
+    if (!Number.isSafeInteger(amount) || amount < 1) {
+      contributeBtn.textContent = 'Enter a valid whole KES amount';
+      setTimeout(() => { contributeBtn.textContent = 'Contribute now'; }, 2200);
+      return;
     }
-
-    setTimeout(() => {
-      contributeBtn.textContent = original;
-    }, 2200);
+    localStorage.setItem('utawalaContribution', JSON.stringify({ amount }));
+    window.location.href = 'checkout.html?type=contribution';
   });
 }
